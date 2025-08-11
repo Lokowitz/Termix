@@ -23,11 +23,12 @@ jobs:
         run: npm run build
 
       - name: Start app
-        run: npm run start
+        run: npm run dev
 
       - name: Start backend app
-        run: npx tsc -p tsconfig.node.json 
-             node ./dist/backend/starter.js
+        run: |
+            npx tsc -p tsconfig.node.json 
+            node ./dist/backend/starter.js
 
       - name: Wait for app availability
         run: |
@@ -41,3 +42,6 @@ jobs:
           done
           echo "App failed to start"
           exit 1
+
+      - name: Build docker image
+      - run: docker build -t lukegus/termix:latest -f /docker/Dockerfile .
