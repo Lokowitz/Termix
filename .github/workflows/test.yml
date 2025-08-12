@@ -44,4 +44,4 @@ jobs:
           exit 1
 
       - name: Build docker image
-      - run: docker build -t lukegus/termix:latest -f /docker/Dockerfile .
+        run: docker build -t lukegus/termix:latest -f /docker/Dockerfile .
