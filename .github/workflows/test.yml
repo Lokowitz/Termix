@@ -10,11 +10,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '22'
 
       - name: Install dependencies
         run: npm ci
@@ -22,18 +22,16 @@ jobs:
       - name: Build app
         run: npm run build
 
-      - name: Start app
-        run: npm run dev
+      - name: Build docker image
+        run: docker build -t lukegus/termix:latest -f ./docker/Dockerfile .
 
-      - name: Start backend app
-        run: |
-            npx tsc -p tsconfig.node.json 
-            node ./dist/backend/starter.js
-
+      - name: Build docker image
+        run: docker run -it -d -p 8080:8080 lukegus/termix:latest
+        
       - name: Wait for app availability
         run: |
           for i in {1..5}; do
-            if curl --silent --fail http://localhost:8080; then
+            if curl --silent --fail http://localhost:8080/; then
               echo "App is up"
               exit 0
             fi
@@ -42,6 +40,3 @@ jobs:
           done
           echo "App failed to start"
           exit 1
-
-      - name: Build docker image
-      - run: docker build -t lukegus/termix:latest -f /docker/Dockerfile .
