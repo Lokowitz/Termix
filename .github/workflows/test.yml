@@ -22,9 +22,6 @@ jobs:
       - name: Build app
         run: npm run build
 
-      - name: Start app
-        run: timeout 5 npm run preview
-
       - name: Build docker image
         run: docker build -t lukegus/termix:latest -f ./docker/Dockerfile .
 
