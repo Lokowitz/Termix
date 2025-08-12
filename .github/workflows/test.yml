@@ -23,12 +23,18 @@ jobs:
         run: npm run build
 
       - name: Start app
-        run: npm run preview
+        run: timeout 5 npm run preview
 
+      - name: Build docker image
+        run: docker build -t lukegus/termix:latest -f ./docker/Dockerfile .
+
+      - name: Build docker image
+        run: docker run -it -d -p 8080:8080 lukegus/termix:latest
+        
       - name: Wait for app availability
         run: |
           for i in {1..5}; do
-            if curl --silent --fail http://localhost:4173/; then
+            if curl --silent --fail http://localhost:8080/; then
               echo "App is up"
               exit 0
             fi
@@ -37,6 +43,3 @@ jobs:
           done
           echo "App failed to start"
           exit 1
-
-      - name: Build docker image
-        run: docker build -t lukegus/termix:latest -f ./docker/Dockerfile .
